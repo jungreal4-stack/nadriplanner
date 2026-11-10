@@ -59,10 +59,19 @@
     return DATA.events.filter(function (ev) { return region.match(ev) && !state.hidden[ev.category]; });
   }
 
+  // 14일이 넘는 상설·장기 행사는 달력 칸 대신 위쪽 띠에 표시
+  var LONG_DAYS = 14;
+  function isLong(ev) { return ev.end && diffDays(parseDate(ev.end), parseDate(ev.start)) >= LONG_DAYS; }
+  function overlapsMonth(ev) {
+    var first = new Date(state.year, state.month, 1), last = new Date(state.year, state.month + 1, 0);
+    return parseDate(ev.start) <= last && parseDate(ev.end || ev.start) >= first;
+  }
+
   // 왼쪽 달력: 행사 기간의 각 날짜
   function eventItems(events) {
     var items = [];
     events.forEach(function (ev) {
+      if (isLong(ev)) return;
       var s = parseDate(ev.start), e = parseDate(ev.end || ev.start);
       for (var d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
         items.push({ date: ymd(d), ev: ev, type: "event",
@@ -132,7 +141,8 @@
       cell.appendChild(el("span", "num", day));
 
       var list = (byDate[key] || []).slice().sort(function (a, b) {
-        return a.type === b.type ? 0 : a.type === "close" ? -1 : 1;
+        if (a.type !== b.type) return a.type === "close" ? -1 : 1;
+        return (b.ev.pick ? 1 : 0) - (a.ev.pick ? 1 : 0);  // ⭐ 추천 먼저
       });
       list.slice(0, MAX_CHIPS).forEach(function (it) { cell.appendChild(chip(it)); });
       if (list.length > MAX_CHIPS) {
@@ -154,7 +164,10 @@
     if (kind === "event") monthItems = monthItems.filter(function (it) {
       return it.isStart || it.date === prefix + "-01";
     });
-    monthItems.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    monthItems.sort(function (a, b) {
+      if (!!a.long !== !!b.long) return a.long ? 1 : -1;  // 장기 행사는 목록 맨 아래
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    });
 
     ul.innerHTML = "";
     if (!monthItems.length) {
@@ -181,6 +194,19 @@
         li.appendChild(el("span", "tag tag-cat", cat(it.ev).label));
       }
       ul.appendChild(li);
+    });
+  }
+
+  function renderLong(box, events) {
+    var list = events.filter(function (ev) { return isLong(ev) && overlapsMonth(ev); });
+    box.innerHTML = "";
+    box.hidden = !list.length;
+    if (!list.length) return;
+    box.appendChild(el("span", "long-title", "이달 내내 열리는 행사"));
+    list.forEach(function (ev) {
+      var c = chip({ ev: ev, type: "event", date: ev.end, label: (ev.pick ? "⭐ " : "") + name(ev) + " · ~" + fmt(ev.end) });
+      c.classList.add("chip-long");
+      box.appendChild(c);
     });
   }
 
@@ -224,9 +250,14 @@
     var events = visibleEvents();
     var evItems = eventItems(events);
     var dlItems = deadlineItems(events);
+    renderLong($("long-event"), events);
     renderCalendar($("cal-event"), evItems);
     renderCalendar($("cal-deadline"), dlItems);
-    renderAgenda($("list-event"), evItems, "event");
+    renderAgenda($("list-event"), evItems.concat(events.filter(function (ev) {
+      return isLong(ev) && overlapsMonth(ev);
+    }).map(function (ev) {
+      return { date: state.year + "-" + pad(state.month + 1) + "-01", ev: ev, type: "event", isStart: true, long: true };
+    })), "event");
     renderAgenda($("list-deadline"), dlItems, "deadline");
   }
 

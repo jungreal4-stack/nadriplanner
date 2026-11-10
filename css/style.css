@@ -103,6 +103,10 @@ a { color: inherit; }
 .chip-close { background: var(--c); color: #fff; font-weight: 700; }
 .chip.past { opacity: .45; }
 .chip.hl, .agenda-item.hl { box-shadow: 0 0 0 2px var(--accent); }
+.long-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+.long-strip[hidden] { display: none; }
+.long-title { font-size: .8rem; font-weight: 700; color: var(--muted); margin-right: 2px; }
+.chip.chip-long { width: auto; max-width: 100%; font-size: .78rem; padding: 3px 8px; }
 .more { border: 0; background: none; font-size: .72rem; color: var(--muted); cursor: pointer; text-align: left; padding: 0 4px; }
 
 /* 목록 */
@@ -151,7 +155,11 @@ a { color: inherit; }
   .cell { min-height: 56px; padding: 2px; }
   .chip { font-size: 0; height: 6px; padding: 0; border-radius: 3px; border-width: 0; }
   .chip-open { border: 1px dashed var(--c); height: 6px; }
-  .more { font-size: .65rem; padding: 0; }
+  .long-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+.long-strip[hidden] { display: none; }
+.long-title { font-size: .8rem; font-weight: 700; color: var(--muted); margin-right: 2px; }
+.chip.chip-long { width: auto; max-width: 100%; font-size: .78rem; padding: 3px 8px; }
+.more { font-size: .65rem; padding: 0; }
   .agenda-item { grid-template-columns: 1fr auto; }
   .agenda-item .when { grid-column: 1 / -1; }
 }
