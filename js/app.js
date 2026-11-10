@@ -1,8 +1,14 @@
 (function () {
   "use strict";
 
-  var DATA = window.NADRI_DATA;
-  var CATS = DATA.categories;
+  var CONFIG = window.NADRI_CONFIG;
+  var DATA = window.NADRI_EVENTS || { events: [] };
+  var CATS = CONFIG.categories;
+  var REGIONS = CONFIG.regions;
+  var FALLBACK_CAT = { label: "기타", color: "#888888" };
+  function cat(ev) { return CATS[ev.category] || FALLBACK_CAT; }
+  function name(ev) { return ev.title.replace(/^\[예시\]\s*/, ""); }
+  function area(ev) { return [ev.sido, ev.city].filter(Boolean).join(" "); }
   var WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
   var MAX_CHIPS = 3;
 
@@ -37,9 +43,8 @@
   /* ---------- 라우팅: #/지역/events/YYYY-MM ---------- */
   function parseHash() {
     var m = location.hash.match(/^#\/([\w-]+)(?:\/events\/(\d{4})-(\d{2}))?/);
-    var regionKeys = Object.keys(DATA.regions);
     var t = today();
-    state.region = m && DATA.regions[m[1]] ? m[1] : regionKeys[0];
+    state.region = m && REGIONS[m[1]] ? m[1] : CONFIG.defaultRegion;
     state.year = m && m[2] ? +m[2] : t.getFullYear();
     state.month = m && m[3] ? +m[3] - 1 : t.getMonth();
   }
@@ -50,7 +55,8 @@
 
   /* ---------- 데이터 → 달력 항목 ---------- */
   function visibleEvents() {
-    return DATA.regions[state.region].events.filter(function (ev) { return !state.hidden[ev.category]; });
+    var region = REGIONS[state.region];
+    return DATA.events.filter(function (ev) { return region.match(ev) && !state.hidden[ev.category]; });
   }
 
   // 왼쪽 달력: 행사 기간의 각 날짜
@@ -60,7 +66,7 @@
       var s = parseDate(ev.start), e = parseDate(ev.end || ev.start);
       for (var d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
         items.push({ date: ymd(d), ev: ev, type: "event",
-          label: ev.title.replace(/^\[예시\]\s*/, ""), isStart: ymd(d) === ev.start });
+          label: (ev.pick ? "⭐ " : "") + name(ev), isStart: ymd(d) === ev.start });
       }
     });
     return items;
@@ -70,9 +76,8 @@
   function deadlineItems(events) {
     var items = [];
     events.forEach(function (ev) {
-      var name = ev.title.replace(/^\[예시\]\s*/, "");
-      if (ev.applyStart) items.push({ date: ev.applyStart.split("T")[0], ev: ev, type: "open", label: "오픈 · " + name });
-      if (ev.applyEnd) items.push({ date: ev.applyEnd.split("T")[0], ev: ev, type: "close", label: "마감 · " + name });
+      if (ev.applyStart) items.push({ date: ev.applyStart.split("T")[0], ev: ev, type: "open", label: "오픈 · " + name(ev) });
+      if (ev.applyEnd) items.push({ date: ev.applyEnd.split("T")[0], ev: ev, type: "close", label: "마감 · " + name(ev) });
     });
     return items;
   }
@@ -93,7 +98,7 @@
 
   function chip(it) {
     var c = el("button", "chip chip-" + it.type, it.label);
-    var color = CATS[it.ev.category].color;
+    var color = cat(it.ev).color;
     c.type = "button";
     c.style.setProperty("--c", color);
     c.dataset.id = it.ev.id;
@@ -159,10 +164,11 @@
     monthItems.forEach(function (it) {
       var li = el("li", "agenda-item");
       li.dataset.id = it.ev.id;
-      li.style.setProperty("--c", CATS[it.ev.category].color);
+      li.style.setProperty("--c", cat(it.ev).color);
       var when = el("span", "when", kind === "event" ? fmtRange(it.ev)
         : fmt(it.type === "open" ? it.ev.applyStart : it.ev.applyEnd));
-      var what = el("button", "what", it.ev.title.replace(/^\[예시\]\s*/, ""));
+      var what = el("button", "what", (it.ev.pick ? "⭐ " : "") + name(it.ev));
+      if (area(it.ev)) what.appendChild(el("small", "area", area(it.ev)));
       what.type = "button";
       what.addEventListener("click", function () { openDetail(it.ev); });
       li.appendChild(when);
@@ -172,7 +178,7 @@
         if (it.type === "close" && parseDate(it.date) < today()) tag.classList.add("past");
         li.appendChild(tag);
       } else {
-        li.appendChild(el("span", "tag tag-cat", CATS[it.ev.category].label));
+        li.appendChild(el("span", "tag tag-cat", cat(it.ev).label));
       }
       ul.appendChild(li);
     });
@@ -194,17 +200,18 @@
   function renderHeader() {
     var sel = $("region-select");
     if (!sel.options.length) {
-      Object.keys(DATA.regions).forEach(function (k) {
-        var o = el("option", null, DATA.regions[k].name);
+      Object.keys(REGIONS).forEach(function (k) {
+        var o = el("option", null, REGIONS[k].name);
         o.value = k;
         sel.appendChild(o);
       });
       sel.addEventListener("change", function () { location.hash = hashFor(sel.value, state.year, state.month); });
     }
     sel.value = state.region;
-    var name = DATA.regions[state.region].name;
-    $("month-title").textContent = name + " · " + state.year + "년 " + (state.month + 1) + "월";
-    document.title = name + " " + state.year + "년 " + (state.month + 1) + "월 나들이 플래너";
+    var rname = REGIONS[state.region].name;
+    $("month-title").textContent = rname + " · " + state.year + "년 " + (state.month + 1) + "월";
+    $("updated").textContent = DATA.updatedAt ? "정보 업데이트: " + DATA.updatedAt + " · 행사 " + DATA.events.length + "개" : "아직 등록된 행사가 없어요.";
+    document.title = rname + " " + state.year + "년 " + (state.month + 1) + "월 나들이 플래너";
     $("prev-month").href = hashFor(state.region, state.year, state.month - 1);
     $("next-month").href = hashFor(state.region, state.year, state.month + 1);
     $("today-btn").href = hashFor(state.region, today().getFullYear(), today().getMonth());
@@ -233,14 +240,16 @@
   function openDetail(ev) {
     var body = $("detail-body");
     body.innerHTML = "";
-    var cat = el("span", "tag tag-cat", CATS[ev.category].label);
-    cat.style.setProperty("--c", CATS[ev.category].color);
-    body.appendChild(cat);
+    var badge = el("span", "tag tag-cat", cat(ev).label);
+    badge.style.setProperty("--c", cat(ev).color);
+    body.appendChild(badge);
+    if (ev.pick) body.appendChild(el("span", "tag tag-pick", "⭐ 이번 주말 추천"));
     body.appendChild(el("h3", null, ev.title));
+    if (ev.summary) body.appendChild(el("p", "summary", ev.summary));
     var dl = el("dl", "info");
     row(dl, "행사 일정", fmtRange(ev));
     row(dl, "시간", ev.time);
-    row(dl, "장소", ev.place);
+    row(dl, "장소", [area(ev), ev.place].filter(Boolean).join(" · "));
     row(dl, "대상", ev.age);
     row(dl, "비용", ev.price);
     if (ev.applyStart || ev.applyEnd) {
@@ -250,6 +259,7 @@
     }
     row(dl, "신청 방법", ev.applyHow);
     row(dl, "메모", ev.note);
+    row(dl, "확인일", ev.checkedAt);
     body.appendChild(dl);
     if (ev.url) {
       var a = el("a", "link", "공식 안내 보기 ↗");

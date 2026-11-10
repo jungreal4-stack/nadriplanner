@@ -59,6 +59,8 @@ a { color: inherit; }
   border: 1px solid var(--line); background: var(--surface); text-decoration: none;
 }
 
+.updated { margin: -4px 0 12px; color: var(--muted); font-size: .85rem; }
+
 /* 필터 */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 .filter {
@@ -113,6 +115,9 @@ a { color: inherit; }
 .when { font-size: .8rem; color: var(--muted); white-space: nowrap; }
 .what { border: 0; background: none; text-align: left; cursor: pointer; font-weight: 600; padding: 0; min-width: 0; }
 .what:hover { text-decoration: underline; }
+.area { display: block; font-weight: 400; font-size: .75rem; color: var(--muted); }
+.tag-pick { margin-left: 6px; background: #ffe9a8; color: #6b5200; }
+.summary { margin: 0 0 12px; color: var(--muted); }
 .tag { font-size: .72rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; font-weight: 700; }
 .tag-cat { background: color-mix(in srgb, var(--c) 18%, transparent); }
 .tag-close { background: var(--accent); color: #fff; }
