@@ -1,0 +1,292 @@
+(function () {
+  "use strict";
+
+  var DATA = window.NADRI_DATA;
+  var CATS = DATA.categories;
+  var WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+  var MAX_CHIPS = 3;
+
+  var state = { region: null, year: 0, month: 0, hidden: {} };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- 날짜 유틸 ---------- */
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function ymd(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parseDate(s) {
+    if (!s) return null;
+    var p = s.split("T")[0].split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function timeOf(s) { return s && s.indexOf("T") > -1 ? s.split("T")[1] : ""; }
+  function today() { var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function diffDays(a, b) { return Math.round((a - b) / 86400000); }
+  function fmt(s) {
+    var d = parseDate(s);
+    var t = timeOf(s);
+    return (d.getMonth() + 1) + "/" + d.getDate() + "(" + WEEKDAYS[d.getDay()] + ")" + (t ? " " + t : "");
+  }
+  function fmtRange(ev) {
+    return ev.end && ev.end !== ev.start ? fmt(ev.start) + " ~ " + fmt(ev.end) : fmt(ev.start);
+  }
+  function dday(s) {
+    var n = diffDays(parseDate(s), today());
+    if (n === 0) return "D-DAY";
+    return n > 0 ? "D-" + n : "종료";
+  }
+
+  /* ---------- 라우팅: #/지역/events/YYYY-MM ---------- */
+  function parseHash() {
+    var m = location.hash.match(/^#\/([\w-]+)(?:\/events\/(\d{4})-(\d{2}))?/);
+    var regionKeys = Object.keys(DATA.regions);
+    var t = today();
+    state.region = m && DATA.regions[m[1]] ? m[1] : regionKeys[0];
+    state.year = m && m[2] ? +m[2] : t.getFullYear();
+    state.month = m && m[3] ? +m[3] - 1 : t.getMonth();
+  }
+  function hashFor(region, y, mo) {
+    var d = new Date(y, mo, 1);
+    return "#/" + region + "/events/" + d.getFullYear() + "-" + pad(d.getMonth() + 1);
+  }
+
+  /* ---------- 데이터 → 달력 항목 ---------- */
+  function visibleEvents() {
+    return DATA.regions[state.region].events.filter(function (ev) { return !state.hidden[ev.category]; });
+  }
+
+  // 왼쪽 달력: 행사 기간의 각 날짜
+  function eventItems(events) {
+    var items = [];
+    events.forEach(function (ev) {
+      var s = parseDate(ev.start), e = parseDate(ev.end || ev.start);
+      for (var d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+        items.push({ date: ymd(d), ev: ev, type: "event",
+          label: ev.title.replace(/^\[예시\]\s*/, ""), isStart: ymd(d) === ev.start });
+      }
+    });
+    return items;
+  }
+
+  // 오른쪽 달력: 신청 시작일 + 마감일
+  function deadlineItems(events) {
+    var items = [];
+    events.forEach(function (ev) {
+      var name = ev.title.replace(/^\[예시\]\s*/, "");
+      if (ev.applyStart) items.push({ date: ev.applyStart.split("T")[0], ev: ev, type: "open", label: "오픈 · " + name });
+      if (ev.applyEnd) items.push({ date: ev.applyEnd.split("T")[0], ev: ev, type: "close", label: "마감 · " + name });
+    });
+    return items;
+  }
+
+  function groupByDate(items) {
+    var map = {};
+    items.forEach(function (it) { (map[it.date] = map[it.date] || []).push(it); });
+    return map;
+  }
+
+  /* ---------- 렌더링 ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function chip(it) {
+    var c = el("button", "chip chip-" + it.type, it.label);
+    var color = CATS[it.ev.category].color;
+    c.type = "button";
+    c.style.setProperty("--c", color);
+    c.dataset.id = it.ev.id;
+    c.title = it.ev.title;
+    if (it.type === "close" && parseDate(it.date) < today()) c.classList.add("past");
+    if (it.type === "event" && parseDate(it.ev.end || it.ev.start) < today()) c.classList.add("past");
+    c.addEventListener("click", function () { openDetail(it.ev); });
+    return c;
+  }
+
+  function renderCalendar(container, items) {
+    var byDate = groupByDate(items);
+    var first = new Date(state.year, state.month, 1);
+    var lastDate = new Date(state.year, state.month + 1, 0).getDate();
+    var todayStr = ymd(today());
+
+    container.innerHTML = "";
+    var grid = el("div", "grid");
+    WEEKDAYS.forEach(function (w, i) {
+      grid.appendChild(el("div", "wd" + (i === 0 ? " sun" : i === 6 ? " sat" : ""), w));
+    });
+    for (var i = 0; i < first.getDay(); i++) grid.appendChild(el("div", "cell empty"));
+
+    for (var day = 1; day <= lastDate; day++) {
+      var d = new Date(state.year, state.month, day);
+      var key = ymd(d);
+      var cell = el("div", "cell");
+      if (d.getDay() === 0) cell.classList.add("sun");
+      if (d.getDay() === 6) cell.classList.add("sat");
+      if (key === todayStr) cell.classList.add("today");
+      cell.appendChild(el("span", "num", day));
+
+      var list = (byDate[key] || []).slice().sort(function (a, b) {
+        return a.type === b.type ? 0 : a.type === "close" ? -1 : 1;
+      });
+      list.slice(0, MAX_CHIPS).forEach(function (it) { cell.appendChild(chip(it)); });
+      if (list.length > MAX_CHIPS) {
+        var more = el("button", "more", "+" + (list.length - MAX_CHIPS) + "개 더");
+        more.type = "button";
+        more.addEventListener("click", (function (l, k) {
+          return function () { openDay(k, l); };
+        })(list, key));
+        cell.appendChild(more);
+      }
+      grid.appendChild(cell);
+    }
+    container.appendChild(grid);
+  }
+
+  function renderAgenda(ul, items, kind) {
+    var prefix = state.year + "-" + pad(state.month + 1);
+    var monthItems = items.filter(function (it) { return it.date.indexOf(prefix) === 0; });
+    if (kind === "event") monthItems = monthItems.filter(function (it) {
+      return it.isStart || it.date === prefix + "-01";
+    });
+    monthItems.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+
+    ul.innerHTML = "";
+    if (!monthItems.length) {
+      ul.appendChild(el("li", "empty-note", kind === "event" ? "이 달에 등록된 행사가 없어요." : "이 달에 신청 일정이 없어요."));
+      return;
+    }
+    monthItems.forEach(function (it) {
+      var li = el("li", "agenda-item");
+      li.dataset.id = it.ev.id;
+      li.style.setProperty("--c", CATS[it.ev.category].color);
+      var when = el("span", "when", kind === "event" ? fmtRange(it.ev)
+        : fmt(it.type === "open" ? it.ev.applyStart : it.ev.applyEnd));
+      var what = el("button", "what", it.ev.title.replace(/^\[예시\]\s*/, ""));
+      what.type = "button";
+      what.addEventListener("click", function () { openDetail(it.ev); });
+      li.appendChild(when);
+      li.appendChild(what);
+      if (kind === "deadline") {
+        var tag = el("span", "tag tag-" + it.type, it.type === "open" ? "신청 오픈" : dday(it.ev.applyEnd));
+        if (it.type === "close" && parseDate(it.date) < today()) tag.classList.add("past");
+        li.appendChild(tag);
+      } else {
+        li.appendChild(el("span", "tag tag-cat", CATS[it.ev.category].label));
+      }
+      ul.appendChild(li);
+    });
+  }
+
+  function renderFilters() {
+    var box = $("filters");
+    box.innerHTML = "";
+    Object.keys(CATS).forEach(function (k) {
+      var b = el("button", "filter" + (state.hidden[k] ? " off" : ""), CATS[k].label);
+      b.type = "button";
+      b.style.setProperty("--c", CATS[k].color);
+      b.setAttribute("aria-pressed", String(!state.hidden[k]));
+      b.addEventListener("click", function () { state.hidden[k] = !state.hidden[k]; render(); });
+      box.appendChild(b);
+    });
+  }
+
+  function renderHeader() {
+    var sel = $("region-select");
+    if (!sel.options.length) {
+      Object.keys(DATA.regions).forEach(function (k) {
+        var o = el("option", null, DATA.regions[k].name);
+        o.value = k;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", function () { location.hash = hashFor(sel.value, state.year, state.month); });
+    }
+    sel.value = state.region;
+    var name = DATA.regions[state.region].name;
+    $("month-title").textContent = name + " · " + state.year + "년 " + (state.month + 1) + "월";
+    document.title = name + " " + state.year + "년 " + (state.month + 1) + "월 나들이 플래너";
+    $("prev-month").href = hashFor(state.region, state.year, state.month - 1);
+    $("next-month").href = hashFor(state.region, state.year, state.month + 1);
+    $("today-btn").href = hashFor(state.region, today().getFullYear(), today().getMonth());
+  }
+
+  function render() {
+    parseHash();
+    renderHeader();
+    renderFilters();
+    var events = visibleEvents();
+    var evItems = eventItems(events);
+    var dlItems = deadlineItems(events);
+    renderCalendar($("cal-event"), evItems);
+    renderCalendar($("cal-deadline"), dlItems);
+    renderAgenda($("list-event"), evItems, "event");
+    renderAgenda($("list-deadline"), dlItems, "deadline");
+  }
+
+  /* ---------- 상세 보기 ---------- */
+  function row(dl, k, v) {
+    if (!v) return;
+    dl.appendChild(el("dt", null, k));
+    dl.appendChild(el("dd", null, v));
+  }
+
+  function openDetail(ev) {
+    var body = $("detail-body");
+    body.innerHTML = "";
+    var cat = el("span", "tag tag-cat", CATS[ev.category].label);
+    cat.style.setProperty("--c", CATS[ev.category].color);
+    body.appendChild(cat);
+    body.appendChild(el("h3", null, ev.title));
+    var dl = el("dl", "info");
+    row(dl, "행사 일정", fmtRange(ev));
+    row(dl, "시간", ev.time);
+    row(dl, "장소", ev.place);
+    row(dl, "대상", ev.age);
+    row(dl, "비용", ev.price);
+    if (ev.applyStart || ev.applyEnd) {
+      row(dl, "신청 기간", (ev.applyStart ? fmt(ev.applyStart) : "") + " ~ " + (ev.applyEnd ? fmt(ev.applyEnd) + " (" + dday(ev.applyEnd) + ")" : ""));
+    } else {
+      row(dl, "신청", "사전 신청 없음");
+    }
+    row(dl, "신청 방법", ev.applyHow);
+    row(dl, "메모", ev.note);
+    body.appendChild(dl);
+    if (ev.url) {
+      var a = el("a", "link", "공식 안내 보기 ↗");
+      a.href = ev.url; a.target = "_blank"; a.rel = "noopener";
+      body.appendChild(a);
+    }
+    showDialog();
+  }
+
+  function openDay(key, list) {
+    var body = $("detail-body");
+    body.innerHTML = "";
+    body.appendChild(el("h3", null, fmt(key) + " 일정"));
+    var wrap = el("div", "day-list");
+    list.forEach(function (it) { wrap.appendChild(chip(it)); });
+    body.appendChild(wrap);
+    showDialog();
+  }
+
+  function showDialog() {
+    var d = $("detail");
+    if (d.open) d.close();
+    if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
+  }
+  $("detail").addEventListener("click", function (e) { if (e.target === this) this.close(); });
+
+  /* ---------- 두 달력 사이 연결 하이라이트 ---------- */
+  function setHighlight(id) {
+    document.querySelectorAll(".hl").forEach(function (n) { n.classList.remove("hl"); });
+    if (!id) return;
+    document.querySelectorAll('[data-id="' + id + '"]').forEach(function (n) { n.classList.add("hl"); });
+  }
+  document.addEventListener("mouseover", function (e) {
+    var t = e.target.closest && e.target.closest("[data-id]");
+    setHighlight(t ? t.dataset.id : null);
+  });
+
+  window.addEventListener("hashchange", render);
+  render();
+})();

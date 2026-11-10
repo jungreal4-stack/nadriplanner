@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>나들이 플래너</title>
+  <meta name="description" content="아이와 함께 갈만한 나들이 행사 일정과 예약·신청 마감일을 한눈에 보는 달력">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#/">🧺 나들이 플래너</a>
+      <label class="region">
+        <span class="sr-only">지역</span>
+        <select id="region-select"></select>
+      </label>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="month-bar">
+      <a id="prev-month" class="nav-btn" aria-label="이전 달">‹</a>
+      <h1 id="month-title"></h1>
+      <a id="next-month" class="nav-btn" aria-label="다음 달">›</a>
+      <a id="today-btn" class="today-btn">이번 달</a>
+    </section>
+
+    <section class="filters" id="filters" aria-label="분류 필터"></section>
+
+    <div class="calendars">
+      <section class="cal-panel" data-kind="event">
+        <header class="cal-head">
+          <h2>🎈 나들이 행사 일정</h2>
+          <p>아이와 함께 갈만한 행사가 열리는 날</p>
+        </header>
+        <div class="calendar" id="cal-event"></div>
+        <ul class="agenda" id="list-event"></ul>
+      </section>
+
+      <section class="cal-panel" data-kind="deadline">
+        <header class="cal-head">
+          <h2>⏰ 예약·신청 마감</h2>
+          <p>놓치면 안 되는 신청 시작일과 마감일</p>
+        </header>
+        <div class="calendar" id="cal-deadline"></div>
+        <ul class="agenda" id="list-deadline"></ul>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="detail" class="detail">
+    <form method="dialog"><button class="close" aria-label="닫기">×</button></form>
+    <div id="detail-body"></div>
+  </dialog>
+
+  <footer class="site-footer wrap">
+    <p>행사 정보는 주최 측 사정에 따라 바뀔 수 있으니 방문·신청 전에 공식 안내를 꼭 확인하세요.</p>
+  </footer>
+
+  <script src="data/events.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
