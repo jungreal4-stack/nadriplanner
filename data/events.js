@@ -22,7 +22,7 @@
  *   checkedAt   정보를 확인한 날짜 (YYYY-MM-DD)
  */
 window.NADRI_EVENTS = {
-  updatedAt: "2026-11-10",
+  updatedAt: "2026-11-12",
   events: [
     {
       id: "20260524-gcm-pizza",
@@ -38,6 +38,21 @@ window.NADRI_EVENTS = {
       summary: "미래의 피자 재료를 상상해 자투리 천·종이·스티커로 피자 조각 상자를 꾸미고, 친구들 조각과 이어 '피자 생태계'를 만들며 자원 순환을 배운다.",
       url: "https://gcm.ggcf.kr/edus/785",
       checkedAt: "2026-11-10"
+    },
+    {
+      id: "20260801-nfm-find-folk",
+      title: "[2026년 하반기 주말 교육] 찾아라! 민속",
+      category: "family",
+      sido: "서울", city: "종로구", near: false,
+      place: "국립민속박물관 상설전시관·야외전시장 (활동지 배부: 상설전시관 2·3관 사이)",
+      start: "2026-08-01", end: "2026-11-29",
+      time: "매주 토·일 14:30~16:30 (활동지는 16:10까지 배부)",
+      age: "어린이 동반 가족",
+      price: "무료",
+      applyHow: "사전 신청 없이 현장 접수",
+      summary: "가족이 전시실과 야외전시장을 돌며 주제별 활동지(1장 약 30분)를 푸는 자율 탐방 프로그램. 하루 2장까지 받을 수 있고, 2장을 완성하면 기념품을 준다. 11월 남은 날짜는 14·15·21·22·28·29일.",
+      url: "https://www.nfm.go.kr/kids/nfmkid/education/selectEducation.do?e_seq=13918&pageIndex=1&subType=I",
+      checkedAt: "2026-11-12"
     },
     {
       id: "20260927-gcm-family-voice",
@@ -187,6 +202,35 @@ window.NADRI_EVENTS = {
       summary: "그림책 『사과가 쿵!』을 옮긴 어린이 라이브 뮤지컬. 커다란 사과를 두고 동물 친구들이 모이는 이야기를 노래와 함께 본다. 집 가까운 곳이라 다음 주 나들이로 좋다.",
       url: "https://nol.yanolja.com/ticket/products/26013058",
       checkedAt: "2026-11-10"
+    },
+    {
+      id: "20261121-boardgame-festa",
+      title: "2026 보드게임페스타(시즌2)",
+      category: "festival",
+      sido: "서울", city: "강남구", near: true,
+      place: "세텍(SETEC) 1·2 전시실",
+      start: "2026-11-21", end: "2026-11-22",
+      time: "21일 10:00~18:00 / 22일 10:00~17:00",
+      price: "1인 5,000원 (사전예매 4,500원)",
+      summary: "새로 나온 보드게임과 출시 예정작을 직접 해 보는 체험 행사. 가족이 체험존에서 함께 게임을 하고, 루미큐브 등 보드게임 대회와 할인 판매존도 둘러볼 수 있다.",
+      url: "http://www.boardgamefesta.com",
+      note: "공식 홈페이지 접속 실패(503), 행사 정보는 축제 안내 페이지 기준. 어린이 요금은 공식 확인 필요",
+      checkedAt: "2026-11-12"
+    },
+    {
+      id: "20261205-matchgirl-seongnam",
+      title: "2026 겨울특집 가족 뮤지컬 〈성냥팔이소녀〉 - 성남",
+      category: "show",
+      sido: "경기", city: "성남시 분당구", near: true,
+      place: "성남아트센터 앙상블시어터",
+      start: "2026-12-05", end: "2026-12-06",
+      time: "토·일 11:00, 14:00, 16:30 (55분)",
+      age: "24개월 이상",
+      price: "전석 40,000원 (기본할인 22,000원)",
+      applyHow: "NOL티켓 예매 (11/12 확인 때 '예매대기' 상태, 예매 오픈일은 페이지에 없음)",
+      summary: "안데르센 동화 『성냥팔이 소녀』를 옮긴 겨울 가족 뮤지컬. 집 가까운 성남아트센터에서 연말 분위기의 공연을 본다.",
+      url: "https://nol.yanolja.com/ticket/products/26014948",
+      checkedAt: "2026-11-12"
     }
   ]
 };
