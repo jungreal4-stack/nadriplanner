@@ -67,6 +67,9 @@
     return parseDate(ev.start) <= last && parseDate(ev.end || ev.start) >= first;
   }
 
+  function covers(ev, key) { return ev.start <= key && (ev.end || ev.start) >= key; }
+  function longOn(events, key) { return events.filter(function (ev) { return isLong(ev) && covers(ev, key); }); }
+
   // 왼쪽 달력: 행사 기간의 각 날짜
   function eventItems(events) {
     var items = [];
@@ -105,20 +108,20 @@
     return n;
   }
 
-  function chip(it) {
-    var c = el("button", "chip chip-" + it.type, it.label);
+  function chip(it, passive) {
+    var c = el(passive ? "span" : "button", "chip chip-" + it.type, it.label);
     var color = cat(it.ev).color;
-    c.type = "button";
+    if (!passive) c.type = "button";
     c.style.setProperty("--c", color);
     c.dataset.id = it.ev.id;
     c.title = it.ev.title;
     if (it.type === "close" && parseDate(it.date) < today()) c.classList.add("past");
     if (it.type === "event" && parseDate(it.ev.end || it.ev.start) < today()) c.classList.add("past");
-    c.addEventListener("click", function () { openDetail(it.ev); });
+    if (!passive) c.addEventListener("click", function () { openDetail(it.ev); });
     return c;
   }
 
-  function renderCalendar(container, items) {
+  function renderCalendar(container, items, kind, events) {
     var byDate = groupByDate(items);
     var first = new Date(state.year, state.month, 1);
     var lastDate = new Date(state.year, state.month + 1, 0).getDate();
@@ -144,14 +147,21 @@
         if (a.type !== b.type) return a.type === "close" ? -1 : 1;
         return (b.ev.pick ? 1 : 0) - (a.ev.pick ? 1 : 0);  // ⭐ 추천 먼저
       });
-      list.slice(0, MAX_CHIPS).forEach(function (it) { cell.appendChild(chip(it)); });
-      if (list.length > MAX_CHIPS) {
-        var more = el("button", "more", "+" + (list.length - MAX_CHIPS) + "개 더");
-        more.type = "button";
-        more.addEventListener("click", (function (l, k) {
-          return function () { openDay(k, l); };
-        })(list, key));
-        cell.appendChild(more);
+      list.slice(0, MAX_CHIPS).forEach(function (it) { cell.appendChild(chip(it, true)); });
+      if (list.length > MAX_CHIPS) cell.appendChild(el("span", "more", "+" + (list.length - MAX_CHIPS) + "개 더"));
+
+      // 일정이 있는 날(또는 장기 행사가 열리는 날)은 칸 전체를 눌러 그날 일정을 크게 본다
+      var longs = kind === "event" ? longOn(events, key) : [];
+      if (list.length || longs.length) {
+        cell.classList.add("has-items");
+        cell.tabIndex = 0;
+        cell.setAttribute("role", "button");
+        cell.setAttribute("aria-label", fmt(key) + " 일정 " + (list.length + longs.length) + "개 보기");
+        var open = (function (k, l, lg) { return function () { openDay(k, l, lg, kind); }; })(key, list, longs);
+        cell.addEventListener("click", open);
+        cell.addEventListener("keydown", (function (fn) {
+          return function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
+        })(open));
       }
       grid.appendChild(cell);
     }
@@ -250,9 +260,10 @@
     var events = visibleEvents();
     var evItems = eventItems(events);
     var dlItems = deadlineItems(events);
+    renderWeekend($("weekend"), events);
     renderLong($("long-event"), events);
-    renderCalendar($("cal-event"), evItems);
-    renderCalendar($("cal-deadline"), dlItems);
+    renderCalendar($("cal-event"), evItems, "event", events);
+    renderCalendar($("cal-deadline"), dlItems, "deadline", events);
     renderAgenda($("list-event"), evItems.concat(events.filter(function (ev) {
       return isLong(ev) && overlapsMonth(ev);
     }).map(function (ev) {
@@ -268,9 +279,15 @@
     dl.appendChild(el("dd", null, v));
   }
 
-  function openDetail(ev) {
+  function openDetail(ev, back) {
     var body = $("detail-body");
     body.innerHTML = "";
+    if (back) {
+      var b = el("button", "back", "‹ " + back.label);
+      b.type = "button";
+      b.addEventListener("click", back.fn);
+      body.appendChild(b);
+    }
     var badge = el("span", "tag tag-cat", cat(ev).label);
     badge.style.setProperty("--c", cat(ev).color);
     body.appendChild(badge);
@@ -300,14 +317,134 @@
     showDialog();
   }
 
-  function openDay(key, list) {
+  function openDay(key, list, longs, kind) {
     var body = $("detail-body");
     body.innerHTML = "";
-    body.appendChild(el("h3", null, fmt(key) + " 일정"));
+    var reopen = { label: fmt(key) + " 일정으로", fn: function () { openDay(key, list, longs, kind); } };
+    var total = list.length + longs.length;
+    body.appendChild(el("p", "day-kicker", kind === "deadline" ? "예약·신청 일정" : "나들이 행사"));
+    body.appendChild(el("h3", "day-title", fmt(key) + " · " + total + "개"));
+
     var wrap = el("div", "day-list");
-    list.forEach(function (it) { wrap.appendChild(chip(it)); });
+    list.forEach(function (it) { wrap.appendChild(dayCard(it, kind, reopen)); });
     body.appendChild(wrap);
+
+    if (longs.length) {
+      body.appendChild(el("p", "day-sub", "이날도 열리는 장기·상시 행사"));
+      var w2 = el("div", "day-list");
+      longs.forEach(function (ev) { w2.appendChild(dayCard({ ev: ev, type: "event", date: key }, "event", reopen)); });
+      body.appendChild(w2);
+    }
     showDialog();
+  }
+
+  // 날짜 창 안의 큰 카드
+  function dayCard(it, kind, back) {
+    var ev = it.ev;
+    var card = el("button", "day-card");
+    card.type = "button";
+    card.style.setProperty("--c", cat(ev).color);
+    card.dataset.id = ev.id;
+
+    var top = el("div", "dc-top");
+    var badge = el("span", "tag tag-cat", cat(ev).label);
+    top.appendChild(badge);
+    if (ev.pick) top.appendChild(el("span", "tag tag-pick", "⭐ 추천"));
+    if (kind === "deadline") {
+      var isOpen = it.type === "open";
+      var t = el("span", "tag " + (isOpen ? "tag-open" : "tag-close"), isOpen ? "신청 오픈" : "신청 마감 " + dday(ev.applyEnd));
+      if (!isOpen && parseDate(ev.applyEnd) < today()) t.classList.add("past");
+      top.appendChild(t);
+    }
+    card.appendChild(top);
+    card.appendChild(el("strong", "dc-title", name(ev)));
+
+    var meta = [];
+    if (kind === "deadline") {
+      meta.push((it.type === "open" ? "신청 시작 " + fmt(ev.applyStart) : "신청 마감 " + fmt(ev.applyEnd)));
+      meta.push("행사 " + fmtRange(ev));
+    } else {
+      meta.push(fmtRange(ev) + (ev.time ? " · " + ev.time : ""));
+    }
+    meta.push([area(ev), ev.place].filter(Boolean).join(" · "));
+    if (ev.age || ev.price) meta.push([ev.age, ev.price].filter(Boolean).join(" · "));
+    meta.forEach(function (m) { if (m) card.appendChild(el("span", "dc-meta", m)); });
+    if (ev.summary) card.appendChild(el("span", "dc-summary", ev.summary));
+    card.appendChild(el("span", "dc-more", "자세히 보기 ›"));
+    card.addEventListener("click", function () { openDetail(ev, back); });
+    return card;
+  }
+
+  /* ---------- 다음 주말 추천 5 ---------- */
+  var WEEKEND_PICKS = 5;
+
+  // 평일이면 다가오는 토·일, 토요일이면 이번 주말, 일요일이면 다음 주말(일요일 아침에 데이터가 갱신되므로)
+  function nextWeekend() {
+    var t = today();
+    var add = t.getDay() === 0 ? 6 : 6 - t.getDay();
+    var sat = new Date(t); sat.setDate(t.getDate() + add);
+    var sun = new Date(sat); sun.setDate(sat.getDate() + 1);
+    return { sat: ymd(sat), sun: ymd(sun) };
+  }
+
+  function weekendScore(ev) {
+    return (ev.pick ? 100 : 0) + (isLong(ev) ? 0 : 20) + (ev.near ? 10 : 0) + (ev.summary ? 1 : 0);
+  }
+
+  // 추천(pick) 우선, 그다음 분야가 겹치지 않게 고르고, 남는 자리는 점수순으로 채운다
+  function pickWeekend(events, wk) {
+    var cands = events.filter(function (ev) { return covers(ev, wk.sat) || covers(ev, wk.sun); })
+      .sort(function (a, b) { return weekendScore(b) - weekendScore(a) || (a.start < b.start ? -1 : 1); });
+    var chosen = [], usedCat = {};
+    cands.forEach(function (ev) {
+      if (chosen.length < WEEKEND_PICKS && (ev.pick || !usedCat[ev.category])) { chosen.push(ev); usedCat[ev.category] = true; }
+    });
+    cands.forEach(function (ev) {
+      if (chosen.length < WEEKEND_PICKS && chosen.indexOf(ev) < 0) chosen.push(ev);
+    });
+    return { list: chosen.sort(function (a, b) { return weekendScore(b) - weekendScore(a); }), total: cands.length };
+  }
+
+  function whichDays(ev, wk) {
+    var s = covers(ev, wk.sat), u = covers(ev, wk.sun);
+    return s && u ? "토·일" : s ? "토요일" : "일요일";
+  }
+
+  function renderWeekend(box, events) {
+    var wk = nextWeekend();
+    var r = pickWeekend(events, wk);
+    box.innerHTML = "";
+    var head = el("div", "wk-head");
+    head.appendChild(el("h2", null, "🌟 다음 주말 추천"));
+    var sat = parseDate(wk.sat), sun = parseDate(wk.sun);
+    head.appendChild(el("span", "wk-date", (sat.getMonth() + 1) + "/" + sat.getDate() + "(토) ~ " + (sun.getMonth() + 1) + "/" + sun.getDate() + "(일)"));
+    if (r.total > r.list.length) head.appendChild(el("span", "wk-count", "후보 " + r.total + "개 중 " + r.list.length + "개"));
+    box.appendChild(head);
+
+    if (!r.list.length) {
+      box.appendChild(el("p", "empty-note", "아직 다음 주말 행사 정보가 없어요. 일요일 아침에 새로 채워집니다."));
+      return;
+    }
+    var row = el("div", "wk-list");
+    r.list.forEach(function (ev, i) {
+      var card = el("button", "wk-card" + (ev.pick ? " is-pick" : ""));
+      card.type = "button";
+      card.dataset.id = ev.id;
+      card.style.setProperty("--c", cat(ev).color);
+      var top = el("div", "dc-top");
+      top.appendChild(el("span", "wk-rank", String(i + 1)));
+      top.appendChild(el("span", "tag tag-cat", cat(ev).label));
+      if (ev.pick) top.appendChild(el("span", "tag tag-pick", "⭐ 강력 추천"));
+      card.appendChild(top);
+      card.appendChild(el("strong", "dc-title", name(ev)));
+      card.appendChild(el("span", "wk-when", whichDays(ev, wk) + (ev.time ? " · " + ev.time : "")));
+      card.appendChild(el("span", "dc-meta", [area(ev), ev.place].filter(Boolean).join(" · ")));
+      if (ev.price) card.appendChild(el("span", "dc-meta", ev.price));
+      if (ev.summary) card.appendChild(el("span", "dc-summary", ev.summary));
+      card.addEventListener("click", function () { openDetail(ev); });
+      row.appendChild(card);
+    });
+    box.appendChild(row);
   }
 
   function showDialog() {
