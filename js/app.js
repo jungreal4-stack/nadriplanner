@@ -314,7 +314,47 @@
       a.href = ev.url; a.target = "_blank"; a.rel = "noopener";
       body.appendChild(a);
     }
+    body.appendChild(relatedLinks(ev));
     showDialog();
+  }
+
+  // 상세 창 하단: 블로그 후기·공지 등 관련 글 (최대 3개) + 네이버 검색 바로가기
+  var LINK_KIND = { review: "후기", notice: "공지", news: "기사", info: "소개" };
+  function searchQuery(ev) {
+    return name(ev).replace(/\s*-\s*[^-]+$/, "").replace(/[<>〈〉\[\]「」《》()]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function relatedLinks(ev) {
+    var box = el("section", "related");
+    box.appendChild(el("h4", null, "관련 글"));
+    var links = (ev.links || []).slice(0, 3);
+    if (links.length) {
+      var ul = el("ul", "related-list");
+      links.forEach(function (l) {
+        var li = el("li");
+        var a = el("a", "related-item");
+        a.href = l.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        var top = el("span", "ri-top");
+        if (l.kind && LINK_KIND[l.kind]) top.appendChild(el("span", "ri-kind ri-" + l.kind, LINK_KIND[l.kind]));
+        top.appendChild(el("span", "ri-source", [l.source, l.date].filter(Boolean).join(" · ")));
+        a.appendChild(top);
+        a.appendChild(el("span", "ri-title", l.title));
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+    } else {
+      box.appendChild(el("p", "related-empty", "아직 모아 둔 글이 없어요."));
+    }
+    var q = searchQuery(ev);
+    var more = el("div", "related-more");
+    [["네이버 블로그 후기", "https://search.naver.com/search.naver?ssc=tab.blog.all&query=" + encodeURIComponent(q + " 후기")],
+     ["네이버 검색", "https://search.naver.com/search.naver?query=" + encodeURIComponent(q)]].forEach(function (x) {
+      var a = el("a", null, x[0] + " ↗");
+      a.href = x[1]; a.target = "_blank"; a.rel = "noopener noreferrer";
+      more.appendChild(a);
+    });
+    box.appendChild(more);
+    return box;
   }
 
   function openDay(key, list, longs, kind) {

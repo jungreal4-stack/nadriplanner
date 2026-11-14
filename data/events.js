@@ -20,6 +20,9 @@
  *   pick        그 주말 가장 추천하는 행사면 true (선택)
  *   url         공식 안내 링크 (확인된 개별 링크)
  *   checkedAt   정보를 확인한 날짜 (YYYY-MM-DD)
+ *   links       관련 글 최대 3개 (선택). 각 항목: { title, url, source, kind, date }
+ *                 title  글 제목 그대로 / url  글 주소(https) / source  "네이버 블로그", "네이버 카페", "뉴스" 등
+ *                 kind   review(후기) | notice(공지) | news(기사) | info(소개) / date  글 작성일 YYYY-MM-DD (선택)
  */
 window.NADRI_EVENTS = {
   updatedAt: "2026-11-12",
@@ -37,6 +40,11 @@ window.NADRI_EVENTS = {
       applyHow: "지지씨 멤버스 사전 예약. 같은 날짜·회차 박물관 입장권을 먼저 예매해야 함",
       summary: "미래의 피자 재료를 상상해 자투리 천·종이·스티커로 피자 조각 상자를 꾸미고, 친구들 조각과 이어 '피자 생태계'를 만들며 자원 순환을 배운다.",
       url: "https://gcm.ggcf.kr/edus/785",
+      links: [
+        {"title": "[백남준아트센터] 색동: 우주오페라 / [경기도어린이박물관] 모두의식탁 프로그램참여 (2026.06.06 토)", "url": "https://blog.naver.com/allaboutmyday/224309655845", "source": "네이버 블로그", "kind": "review", "date": "2026-06-08"},
+        {"title": "경기도어린이박물관 아이와 나들이｜모두의 식탁 피자 만들기부터 자석블록 놀이까지", "url": "https://blog.naver.com/4everluvyou/224449031367", "source": "네이버 블로그", "kind": "review", "date": "2026-10-21"},
+        {"title": "용인 아이랑 갈 만한 곳｜경기도어린이박물관 체험 3가지, 예약부터 주차까지", "url": "https://blog.naver.com/playwithkids_kr/224454685665", "source": "네이버 블로그", "kind": "info", "date": "2026-10-26"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -52,6 +60,9 @@ window.NADRI_EVENTS = {
       applyHow: "사전 신청 없이 현장 접수",
       summary: "가족이 전시실과 야외전시장을 돌며 주제별 활동지(1장 약 30분)를 푸는 자율 탐방 프로그램. 하루 2장까지 받을 수 있고, 2장을 완성하면 기념품을 준다. 11월 남은 날짜는 14·15·21·22·28·29일.",
       url: "https://www.nfm.go.kr/kids/nfmkid/education/selectEducation.do?e_seq=13918&pageIndex=1&subType=I",
+      links: [
+        {"title": "국립민속박물관 아이랑 갔다가 무료 체험 발견, 찾아라 민속! 활동지 풀면 선물 받아요", "url": "https://blog.naver.com/san-bom/224286476206", "source": "네이버 블로그", "kind": "review", "date": "2026-05-15"}
+      ],
       checkedAt: "2026-11-12"
     },
     {
@@ -68,6 +79,11 @@ window.NADRI_EVENTS = {
       applyHow: "지지씨 멤버스 사전 예약. 각 회차 30일 전부터 1일 전까지 신청(마지막 12/13 회차는 12/12까지). 입장권 먼저 예약",
       summary: "가족이 대화하며 '귀 기울여 듣기'를 몸으로 체험하고 함께 가족 카드를 만드는 전시 연계 교육. 남은 회차는 11/15, 11/22, 11/29, 12/6, 12/13.",
       url: "https://gcm.ggcf.kr/edus/800",
+      links: [
+        {"title": "용인 경기도어린이박물관｜ 아기랑 실내 가볼 만한 곳 ·주차정보·11월 무료 운영일·체험 프로그램 예약 안내", "url": "https://blog.naver.com/nae-ongi/224432746679", "source": "네이버 블로그", "kind": "info", "date": "2026-10-06"},
+        {"title": "아이 체험하는곳 서울 경기 6곳 (예약 꿀팁 총정리)", "url": "https://blog.naver.com/beallthere__/224466592576", "source": "네이버 블로그", "kind": "info", "date": "2026-11-06"},
+        {"title": "아이와 경기도어린이박물관 11월 나들이, 무료운영일 7 · 8 · 21 · 22일 · 3층 공사 · 회차 예매 · 주차비", "url": "https://blog.naver.com/sopoong-kids/224466016575", "source": "네이버 블로그", "kind": "info", "date": "2026-11-06"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -81,6 +97,11 @@ window.NADRI_EVENTS = {
       price: "무료",
       summary: "옛 부엌에서 음식과 그릇을 보관하던 가구 '찬탁'의 쓰임과 역사를 보여 주고, 작가가 이를 새롭게 해석한 가구 작품도 함께 전시한다. 아이 전용 체험은 안내되어 있지 않다.",
       url: "https://www.swcf.or.kr/?p=29_view&idx=3075",
+      links: [
+        {"title": "국립농업박물관 전시｜부엌의 일상을 새롭게 바라보다, 《따스하게 달그락》", "url": "https://blog.naver.com/agriculturalmuseum/224472598240", "source": "네이버 블로그", "kind": "notice", "date": "2026-11-11"},
+        {"title": "따스하게 달그락, 수원 국립농업박물관", "url": "https://blog.naver.com/ubouno/224471209458", "source": "네이버 블로그", "kind": "review", "date": "2026-11-10"},
+        {"title": "수원 아이와 가볼만한곳 국립농업박물관 주말 나들이! 곤충관·식물원부터 11월 기획전시까지 (어린이박물관 휴관 정보)", "url": "https://blog.naver.com/blanc-mj/224470266060", "source": "네이버 블로그", "kind": "review", "date": "2026-11-09"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -95,6 +116,11 @@ window.NADRI_EVENTS = {
       price: "13일 2만 원, 14일 3만 원, 15일 2만 원",
       summary: "장난감 악기와 토이피아노로 꾸미는 음악 축제. 15일(일)에는 어린이·가족 대상 키즈컬 「플라스틱 나라」와 워크숍이 열린다.",
       url: "https://sites.google.com/view/toymusicfestival/2026-festival",
+      links: [
+        {"title": "장난감 악기의 경계를 넘어 현대음악의 새로운 음향을 탐색하다", "url": "https://blog.naver.com/klingsol/224476669894", "source": "네이버 블로그", "kind": "review", "date": "2026-11-14"},
+        {"title": "2026 제7회 장난감 음악제, 아이와 볼까? 공연 일정·티켓 가격 정리", "url": "https://blog.naver.com/narcissus0103/224469647012", "source": "네이버 블로그", "kind": "info", "date": "2026-11-09"},
+        {"title": "장난감음악제 2026, 작은 피아노 앞에 어른 연주자들이 모였습니다", "url": "https://blog.naver.com/sell_memories/224462239450", "source": "네이버 블로그", "kind": "info", "date": "2026-11-02"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -111,6 +137,11 @@ window.NADRI_EVENTS = {
       summary: "부모를 찾아 아프리카도마뱀과 환상 여행을 떠나는 아이 이야기를 전통 줄타기, 음악, 춤, 재담으로 풀어낸 가족 공연. 눈앞에서 줄타기 묘기를 볼 수 있다.",
       pick: true,
       url: "https://www.swcf.or.kr/?p=29_view&idx=3072",
+      links: [
+        {"title": "[광대생각] 예술경영지원센터 2025 공연예술 지역 유통지원사업 <줄 타는 아이와 아프리카도마뱀> 공연 후기 in 군산예술의전당", "url": "https://blog.naver.com/2013playedu/224110488543", "source": "네이버 블로그", "kind": "review", "date": "2025-12-15"},
+        {"title": "이번 주 수원 행사 4선 | 2026년 11월 13~15일 주말 가볼 만한 곳", "url": "https://blog.naver.com/shin_jm_/224472979858", "source": "네이버 블로그", "kind": "info", "date": "2026-11-11"},
+        {"title": "\"딱 하루만 열린다고?\" 이번 주말 수원에서 아이와 꼭 봐야 할 이색 공연!", "url": "https://blog.naver.com/harusuzip-/224476382800", "source": "네이버 블로그", "kind": "info", "date": "2026-11-14"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -127,6 +158,11 @@ window.NADRI_EVENTS = {
       pick: true,
       url: "https://festival.seoul.go.kr/festival/main/festivalView.do?festacode=977",
       note: "전용 주차장 없음, 대중교통 권장",
+      links: [
+        {"title": "🌿 2026 제2회 별빛내린 도림천 생태공예문화 페스타 총정리! 일정·체험·공연 시간표·주차 안내", "url": "https://blog.naver.com/ssanggaya/224472880784", "source": "네이버 블로그", "kind": "info", "date": "2026-11-12"},
+        {"title": "2026 별빛내린 도림천 페스타 무료 체험키트 선착순 250명, 몇 시에 가야 할까?", "url": "https://blog.naver.com/darimpick/224473594332", "source": "네이버 블로그", "kind": "info", "date": "2026-11-12"},
+        {"title": "2026 별빛내린 도림천 페스타｜서울 아이와 무료 체험·공연, 예약과 주차", "url": "https://blog.naver.com/3chaediary/224472748628", "source": "네이버 블로그", "kind": "info", "date": "2026-11-11"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -159,6 +195,11 @@ window.NADRI_EVENTS = {
       applyHow: "NOL티켓 등 예매처 사전 예매. 당일 예매분은 취소·환불 불가",
       summary: "유튜브 캐릭온TV 캐릭터들이 나오는 몬스터 세계 전쟁 이야기의 캐릭터 뮤지컬. 아이가 좋아하는 캐릭터를 무대에서 직접 본다.",
       url: "https://nol.yanolja.com/ticket/products/26011601",
+      links: [
+        {"title": "인천 남동소래아트홀 어린이 뮤지컬 할인, 11월 타키포오·12월 루돌프 공연정보", "url": "https://blog.naver.com/yull_velymom/224471686726", "source": "네이버 블로그", "kind": "info", "date": "2026-11-10"},
+        {"title": "대구 어린이 세상 타키포오 뮤지컬 후기｜8살 아이와 뮤지컬, 주차 팁까지", "url": "https://blog.naver.com/dalbodreday/224410002053", "source": "네이버 블로그", "kind": "review", "date": "2026-09-13"},
+        {"title": "뮤지컬 타키포오 「몬스터 전쟁의 서막 ; 더 좀비」 관람 후기", "url": "https://blog.naver.com/farrr/224406112814", "source": "네이버 블로그", "kind": "review", "date": "2026-09-09"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -174,6 +215,11 @@ window.NADRI_EVENTS = {
       applyHow: "NOL티켓 예매",
       summary: "바닷속 세계를 배경으로 한 대극장 가족 뮤지컬. 큰 무대에서 노래와 춤이 어우러진 공연을 온 가족이 함께 본다.",
       url: "https://nol.yanolja.com/ticket/products/26007683",
+      links: [
+        {"title": "[인터파크티켓] 송승환의 가족뮤지컬〈더 스토리 오브 언더더씨〉- 수원 티켓오픈 안내", "url": "https://blog.naver.com/hohomom0225/224295694685", "source": "네이버 블로그", "kind": "notice", "date": "2026-05-25"},
+        {"title": "어린이뮤지컬 추천｜송승환의 더 스토리 오브 언더더씨 관람 후기", "url": "https://blog.naver.com/wooju--/224470219469", "source": "네이버 블로그", "kind": "review", "date": "2026-11-10"},
+        {"title": "올림픽공원 어린이 뮤지컬 추천, 6살 아이와 본 더 스토리 오브 언더더씨 관람 후기", "url": "https://blog.naver.com/rhoseunga/224409933533", "source": "네이버 블로그", "kind": "review", "date": "2026-09-13"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -186,6 +232,10 @@ window.NADRI_EVENTS = {
       time: "14:00~17:00",
       summary: "어린이대공원 야외 열린무대에서 열리는 태권도 시범 공연. 공원 산책과 놀이터 나들이에 곁들여 보기 좋다.",
       url: "https://www.sisul.or.kr/open_content/sub/schedule/detail.do?year=2026&month=11&day=15&site_div=childrenpark",
+      links: [
+        {"title": "[공연 초대] 구의동 명성태권도 시범단, 어린이대공원 열린무대에서 만나요!", "url": "https://blog.naver.com/myeongseong_tkd/224471711224", "source": "네이버 블로그", "kind": "notice", "date": "2026-11-10"},
+        {"title": "어린이대공원 숲속의 무대 태권도 무료 공연 - 명성태권도 시범단", "url": "https://blog.naver.com/myeongseong_tkd/224240160068", "source": "네이버 블로그", "kind": "notice", "date": "2026-04-04"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -201,6 +251,11 @@ window.NADRI_EVENTS = {
       applyHow: "NOL티켓 예매, 관람 2시간 전까지",
       summary: "그림책 『사과가 쿵!』을 옮긴 어린이 라이브 뮤지컬. 커다란 사과를 두고 동물 친구들이 모이는 이야기를 노래와 함께 본다. 집 가까운 곳이라 다음 주 나들이로 좋다.",
       url: "https://nol.yanolja.com/ticket/products/26013058",
+      links: [
+        {"title": "성남 영유아 뮤지컬 사과가 쿵, 11월 공연 일정과 티켓 할인 예매 팁", "url": "https://blog.naver.com/daldal_123/224457538103", "source": "네이버 블로그", "kind": "info", "date": "2026-10-29"},
+        {"title": "사과가 쿵! 어린이 뮤지컬 | 37개월 아이와 주말 공연 관람", "url": "https://blog.naver.com/sunnylee0917/224465781996", "source": "네이버 블로그", "kind": "review", "date": "2026-11-05"},
+        {"title": "25개월 아기 첫 뮤지컬 사과가 쿵 후기｜55분 끝까지 볼 수 있을까?", "url": "https://blog.naver.com/chosen_zip/224426545467", "source": "네이버 블로그", "kind": "review", "date": "2026-09-30"}
+      ],
       checkedAt: "2026-11-10"
     },
     {
@@ -215,6 +270,11 @@ window.NADRI_EVENTS = {
       summary: "새로 나온 보드게임과 출시 예정작을 직접 해 보는 체험 행사. 가족이 체험존에서 함께 게임을 하고, 루미큐브 등 보드게임 대회와 할인 판매존도 둘러볼 수 있다.",
       url: "http://www.boardgamefesta.com",
       note: "공식 홈페이지 접속 실패(503), 행사 정보는 축제 안내 페이지 기준. 어린이 요금은 공식 확인 필요",
+      links: [
+        {"title": "2026 보드게임페스타 시즌2 일정 총정리 | 요금·위치·시간·체험·가족나들이·주차", "url": "https://blog.naver.com/maplesonic6/224461310015", "source": "네이버 블로그", "kind": "info", "date": "2026-11-02"},
+        {"title": "2026 보드게임페스타 시즌2 예매 가격, 어린이 무료입장 세텍 일정과 주차 총정리", "url": "https://blog.naver.com/mysticbp/224471107712", "source": "네이버 블로그", "kind": "info", "date": "2026-11-10"},
+        {"title": "2026 보드게임페스타 시즌2｜세텍 일정·입장료·아이와 체험할 거리", "url": "https://blog.naver.com/puffmori/224476030891", "source": "네이버 블로그", "kind": "info", "date": "2026-11-13"}
+      ],
       checkedAt: "2026-11-12"
     },
     {

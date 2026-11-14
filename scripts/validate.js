@@ -31,6 +31,19 @@ if (data && data.updatedAt && !DATE.test(data.updatedAt)) errors.push("updatedAt
   for (const k of ["applyStart", "applyEnd"]) if (ev[k] && !DATETIME.test(ev[k])) errors.push(`${at}: ${k} 날짜 형식 오류`);
   if (ev.end && ev.start && ev.end < ev.start) errors.push(`${at}: end가 start보다 빠름`);
   if (ev.applyStart && ev.applyEnd && ev.applyEnd.slice(0, 10) < ev.applyStart.slice(0, 10)) errors.push(`${at}: applyEnd가 applyStart보다 빠름`);
+  if (ev.links !== undefined) {
+    if (!Array.isArray(ev.links)) errors.push(`${at}: links는 배열이어야 합니다`);
+    else {
+      if (ev.links.length > 3) errors.push(`${at}: links는 최대 3개`);
+      ev.links.forEach((l, j) => {
+        if (!l || !l.title || !l.url) errors.push(`${at}: links[${j}] title/url 누락`);
+        else if (!/^https:\/\//.test(l.url)) errors.push(`${at}: links[${j}] url은 https://로 시작해야 합니다`);
+        if (l && l.kind && !["review", "notice", "news", "info"].includes(l.kind)) errors.push(`${at}: links[${j}] kind는 review/notice/news/info`);
+        if (l && l.date && !DATE.test(l.date)) errors.push(`${at}: links[${j}] date 형식 오류`);
+        if (l && l.url && l.url === ev.url) errors.push(`${at}: links[${j}]가 공식 url과 같습니다`);
+      });
+    }
+  }
   if (ev.category === "science" && !ev.near) errors.push(`${at}: 과학 행사는 성남·분당 인근(near: true)만 넣습니다`);
 });
 
