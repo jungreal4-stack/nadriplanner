@@ -25,7 +25,7 @@
  *                 kind   review(후기) | notice(공지) | news(기사) | info(소개) / date  글 작성일 YYYY-MM-DD (선택)
  */
 window.NADRI_EVENTS = {
-  updatedAt: "2026-11-12",
+  updatedAt: "2026-11-15",
   events: [
     {
       id: "20260524-gcm-pizza",
@@ -46,6 +46,21 @@ window.NADRI_EVENTS = {
         {"title": "용인 아이랑 갈 만한 곳｜경기도어린이박물관 체험 3가지, 예약부터 주차까지", "url": "https://blog.naver.com/playwithkids_kr/224454685665", "source": "네이버 블로그", "kind": "info", "date": "2026-10-26"}
       ],
       checkedAt: "2026-11-10"
+    },
+    {
+      id: "20260801-jeongjo-k-stage",
+      title: "2026 정조테마공연장 주말 프로그램 <정조 K 스테이지>",
+      category: "local",
+      sido: "경기", city: "수원시 팔달구", near: true,
+      place: "정조테마공연장 어울마당·어울무대",
+      start: "2026-08-01", end: "2026-12-19",
+      time: "매주 금·토·일 (프로그램별 시간 다름)",
+      age: "전 연령",
+      price: "무료 (자유 관람)",
+      summary: "화성행궁 옆 정조테마공연장 마당에서 열리는 주말 버스킹 공연과 가족 전통놀이 마당. 토요일에는 재현배우와 함께하는 특별 전통놀이 체험도 있다.",
+      url: "https://www.swcf.or.kr/?p=29_view&idx=3031",
+      note: "날씨에 따라 일정 변경, 전용 주차장 없음",
+      checkedAt: "2026-11-15"
     },
     {
       id: "20260801-nfm-find-folk",
@@ -135,7 +150,6 @@ window.NADRI_EVENTS = {
       price: "전석 10,000원",
       applyHow: "NOL티켓(인터파크) 예매",
       summary: "부모를 찾아 아프리카도마뱀과 환상 여행을 떠나는 아이 이야기를 전통 줄타기, 음악, 춤, 재담으로 풀어낸 가족 공연. 눈앞에서 줄타기 묘기를 볼 수 있다.",
-      pick: true,
       url: "https://www.swcf.or.kr/?p=29_view&idx=3072",
       links: [
         {"title": "[광대생각] 예술경영지원센터 2025 공연예술 지역 유통지원사업 <줄 타는 아이와 아프리카도마뱀> 공연 후기 in 군산예술의전당", "url": "https://blog.naver.com/2013playedu/224110488543", "source": "네이버 블로그", "kind": "review", "date": "2025-12-15"},
@@ -155,7 +169,6 @@ window.NADRI_EVENTS = {
       age: "누구나, 가족 단위 환영",
       price: "무료 (체험 키트는 오전 선착순 하루 250명)",
       summary: "하천 생태를 주제로 한 야외 축제. 아이들은 한지 생태지도 만들기, 수질 측정, 생태해설 투어, 공예 부스를 체험하고, 15일에는 가족 생태음악극 《물의 기억》을 본다.",
-      pick: true,
       url: "https://festival.seoul.go.kr/festival/main/festivalView.do?festacode=977",
       note: "전용 주차장 없음, 대중교통 권장",
       links: [
@@ -239,6 +252,42 @@ window.NADRI_EVENTS = {
       checkedAt: "2026-11-10"
     },
     {
+      id: "20261121-kkomabyeol-treasure",
+      title: "꼬마별이 만든 보물성",
+      category: "show",
+      sido: "경기", city: "수원시 팔달구", near: true,
+      place: "정조테마공연장",
+      start: "2026-11-21",
+      time: "16:00 (50분)",
+      age: "36개월 이상",
+      price: "전석 20,000원",
+      applyHow: "NOL티켓 예매",
+      summary: "경기국악원과 정조테마공연장이 함께 만든 가족 국악 공연. 흩어진 보물을 찾아 성의 네 문(지혜·나눔·힘·평등)을 지나는 꼬마별 이야기를 국악으로 듣는다.",
+      pick: true,
+      url: "https://www.swcf.or.kr/?p=29_view&idx=3022",
+      links: [
+        {"title": "💛경기국악원에서 공연 관람했어요~💛", "url": "https://blog.naver.com/ysl2787174/224400462519", "source": "네이버 블로그", "kind": "review", "date": "2026-09-04"},
+        {"title": "#인인화락 | 깊어지는 가을, 11월 소식 미리보기", "url": "https://blog.naver.com/swcf_kr/224457863139", "source": "네이버 블로그", "kind": "notice", "date": "2026-10-29"},
+        {"title": "경기 국악원 [꼬마별이 만든 보물성]", "url": "https://blog.naver.com/bh_kids/224446777562", "source": "네이버 블로그", "kind": "info", "date": "2026-10-19"}
+      ],
+      checkedAt: "2026-11-15"
+    },
+    {
+      id: "20261121-namsan-night-walk",
+      title: "반짝반짝 남산밤길",
+      category: "local",
+      sido: "서울", city: "중구", near: false,
+      place: "남산골한옥마을 천우각 집결 → 남산 팔각정 (약 3km)",
+      start: "2026-11-21",
+      time: "19:00~21:00 (약 90분)",
+      age: "누구나",
+      price: "무료",
+      applyHow: "사전 신청 없이 현장 선착순 700명",
+      summary: "남산골한옥마을에서 남산공원길을 따라 팔각정까지 3km를 걷는 야간 트레킹. 야광 팔찌와 기념품을 받고 가족이 함께 밤 산책을 즐긴다.",
+      url: "https://festival.seoul.go.kr/festival/main/festivalView.do?festacode=952",
+      checkedAt: "2026-11-15"
+    },
+    {
       id: "20261121-apple-kung-seongnam",
       title: "2026 베스트셀러 뮤지컬 〈사과가 쿵!〉 - 성남",
       category: "show",
@@ -268,6 +317,7 @@ window.NADRI_EVENTS = {
       time: "21일 10:00~18:00 / 22일 10:00~17:00",
       price: "1인 5,000원 (사전예매 4,500원)",
       summary: "새로 나온 보드게임과 출시 예정작을 직접 해 보는 체험 행사. 가족이 체험존에서 함께 게임을 하고, 루미큐브 등 보드게임 대회와 할인 판매존도 둘러볼 수 있다.",
+      pick: true,
       url: "http://www.boardgamefesta.com",
       note: "공식 홈페이지 접속 실패(503), 행사 정보는 축제 안내 페이지 기준. 어린이 요금은 공식 확인 필요",
       links: [
