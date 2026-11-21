@@ -25,7 +25,7 @@
  *                 kind   review(후기) | notice(공지) | news(기사) | info(소개) / date  글 작성일 YYYY-MM-DD (선택)
  */
 window.NADRI_EVENTS = {
-  updatedAt: "2026-11-15",
+  updatedAt: "2026-11-22",
   events: [
     {
       id: "20260524-gcm-pizza",
@@ -74,6 +74,7 @@ window.NADRI_EVENTS = {
       price: "무료",
       applyHow: "사전 신청 없이 현장 접수",
       summary: "가족이 전시실과 야외전시장을 돌며 주제별 활동지(1장 약 30분)를 푸는 자율 탐방 프로그램. 하루 2장까지 받을 수 있고, 2장을 완성하면 기념품을 준다. 11월 남은 날짜는 14·15·21·22·28·29일.",
+      pick: true,
       url: "https://www.nfm.go.kr/kids/nfmkid/education/selectEducation.do?e_seq=13918&pageIndex=1&subType=I",
       links: [
         {"title": "국립민속박물관 아이랑 갔다가 무료 체험 발견, 찾아라 민속! 활동지 풀면 선물 받아요", "url": "https://blog.naver.com/san-bom/224286476206", "source": "네이버 블로그", "kind": "review", "date": "2026-05-15"}
@@ -118,6 +119,21 @@ window.NADRI_EVENTS = {
         {"title": "수원 아이와 가볼만한곳 국립농업박물관 주말 나들이! 곤충관·식물원부터 11월 기획전시까지 (어린이박물관 휴관 정보)", "url": "https://blog.naver.com/blanc-mj/224470266060", "source": "네이버 블로그", "kind": "review", "date": "2026-11-09"}
       ],
       checkedAt: "2026-11-10"
+    },
+    {
+      id: "20261104-cinderella-suwon",
+      title: "어린이라이브뮤지컬 신데렐라 - 수원",
+      category: "show",
+      sido: "경기", city: "수원시 팔달구", near: true,
+      place: "KBS수원아트홀",
+      start: "2026-11-04", end: "2026-11-29",
+      time: "주말·공휴일 11:00, 13:00 (50분)",
+      age: "24개월 이상",
+      price: "전석 35,000원 (기본할인 20,000원)",
+      applyHow: "NOL티켓 예매, 관람 전날 17시까지",
+      summary: "동화 『신데렐라』를 배우들이 노래와 함께 들려주는 50분짜리 어린이 라이브 뮤지컬. 11/29(일)이 마지막 공연이다.",
+      url: "https://nol.yanolja.com/ticket/products/26012894",
+      checkedAt: "2026-11-22"
     },
     {
       id: "20261113-toy-music-festival",
@@ -263,7 +279,6 @@ window.NADRI_EVENTS = {
       price: "전석 20,000원",
       applyHow: "NOL티켓 예매",
       summary: "경기국악원과 정조테마공연장이 함께 만든 가족 국악 공연. 흩어진 보물을 찾아 성의 네 문(지혜·나눔·힘·평등)을 지나는 꼬마별 이야기를 국악으로 듣는다.",
-      pick: true,
       url: "https://www.swcf.or.kr/?p=29_view&idx=3022",
       links: [
         {"title": "💛경기국악원에서 공연 관람했어요~💛", "url": "https://blog.naver.com/ysl2787174/224400462519", "source": "네이버 블로그", "kind": "review", "date": "2026-09-04"},
@@ -317,7 +332,6 @@ window.NADRI_EVENTS = {
       time: "21일 10:00~18:00 / 22일 10:00~17:00",
       price: "1인 5,000원 (사전예매 4,500원)",
       summary: "새로 나온 보드게임과 출시 예정작을 직접 해 보는 체험 행사. 가족이 체험존에서 함께 게임을 하고, 루미큐브 등 보드게임 대회와 할인 판매존도 둘러볼 수 있다.",
-      pick: true,
       url: "http://www.boardgamefesta.com",
       note: "공식 홈페이지 접속 실패(503), 행사 정보는 축제 안내 페이지 기준. 어린이 요금은 공식 확인 필요",
       links: [
@@ -326,6 +340,38 @@ window.NADRI_EVENTS = {
         {"title": "2026 보드게임페스타 시즌2｜세텍 일정·입장료·아이와 체험할 거리", "url": "https://blog.naver.com/puffmori/224476030891", "source": "네이버 블로그", "kind": "info", "date": "2026-11-13"}
       ],
       checkedAt: "2026-11-12"
+    },
+    {
+      id: "20261128-saturday-kids-classic",
+      title: "2026년 〈토요키즈클래식〉 (하반기) - 11월",
+      category: "show",
+      sido: "경기", city: "용인시 수지구", near: true,
+      place: "용인포은아트홀",
+      start: "2026-11-28",
+      time: "15:00 (60분)",
+      age: "48개월 이상",
+      price: "1층석 20,000원, 2층석 15,000원",
+      applyEnd: "2026-11-27T17:00",
+      applyHow: "NOL티켓 단독 판매, 토요일 공연은 전날 17시까지 예매",
+      summary: "용인문화재단의 어린이 해설 클래식 시리즈 하반기 마지막 회차. 아이들이 공연장에서 해설과 함께 클래식 연주를 듣는다. 11월 회차의 곡과 주제는 예매 페이지에 나와 있지 않다.",
+      pick: true,
+      url: "https://nol.yanolja.com/ticket/products/26008730",
+      checkedAt: "2026-11-22"
+    },
+    {
+      id: "20261128-insider-family-incheon",
+      title: "라이브 시트콤 뮤지컬 〈인싸가족〉 (인천)",
+      category: "show",
+      sido: "인천", city: "남동구", near: false,
+      place: "인천문화예술회관 대공연장",
+      start: "2026-11-28", end: "2026-11-29",
+      time: "11:00, 14:00, 16:30 (70분)",
+      age: "24개월 이상",
+      price: "R석 70,000원, S석 60,000원",
+      applyHow: "NOL티켓 예매, 관람 2시간 전까지 (11/22 확인 때 '예매대기' 상태)",
+      summary: "공연 장면을 무대 위에서 실시간으로 찍어 영상으로 함께 보여 주는 '라이브 시트콤' 형식의 가족 뮤지컬. 촬영 중에 객석 관객의 얼굴과 목소리도 담길 수 있다.",
+      url: "https://nol.yanolja.com/ticket/products/26012921",
+      checkedAt: "2026-11-22"
     },
     {
       id: "20261205-matchgirl-seongnam",
@@ -341,6 +387,23 @@ window.NADRI_EVENTS = {
       summary: "안데르센 동화 『성냥팔이 소녀』를 옮긴 겨울 가족 뮤지컬. 집 가까운 성남아트센터에서 연말 분위기의 공연을 본다.",
       url: "https://nol.yanolja.com/ticket/products/26014948",
       checkedAt: "2026-11-12"
+    },
+    {
+      id: "20261212-clap-picturebook-concert",
+      title: "ACI 키즈 콘서트 〈클랩 그림책 콘서트〉 Ⅴ",
+      category: "show",
+      sido: "인천", city: "연수구", near: false,
+      place: "아트센터인천 다목적홀",
+      start: "2026-12-12",
+      time: "15:00 (50분)",
+      age: "48개월 이상, 1인 1티켓",
+      price: "전석 20,000원",
+      applyStart: "2026-03-03T14:00",
+      applyEnd: "2026-12-12T10:00",
+      applyHow: "NOL티켓 예매, 관람일 오전 10시까지",
+      summary: "그림책을 음악과 함께 읽어 주는 어린이 콘서트. 아이들이 그림책 이야기를 연주와 노래로 듣는다.",
+      url: "https://nol.yanolja.com/ticket/products/26002894",
+      checkedAt: "2026-11-22"
     }
   ]
 };
